@@ -580,15 +580,33 @@ void update_game_play(Game_State *game, const Input_State *input)
 	if(input->dup > 0) // rotate piece
 	{
 		piece.rotation = (piece.rotation + 1) % 4;
+		printf("Rotation: %d\n", piece.rotation);
 	}
 
-	if(check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
+
+	// validate before which piece is turned to out of bounds
+	if((piece.rotation == 1 && input->dright > 0) || (piece.rotation == 3 && input->dleft > 0))
 	{
-		game->piece = piece; // update the in game piece state
-	}
-	if(check_piece_valid(&piece2, game->board, WIDTH, HEIGHT))
+		if(check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
+		{
+			game->piece = piece; // update the in game piece state
+
+			if(check_piece_valid(&piece2, game->board, WIDTH, HEIGHT))
+			{
+				game->piece2 = piece2; // update the in game piece state
+			}
+		}
+	} else
 	{
-		game->piece2 = piece2; // update the in game piece state
+		if(check_piece_valid(&piece2, game->board, WIDTH, HEIGHT))
+		{
+			game->piece2 = piece2; // update the in game piece state
+
+			if(check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
+			{
+				game->piece = piece; // update the in game piece state
+			}
+		}
 	}
 
 	if(input->ddown > 0)
