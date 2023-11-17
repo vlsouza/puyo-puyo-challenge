@@ -395,11 +395,13 @@ get_time_to_next_drop(s32 level)
 void spawn_piece(Game_State *game)
 {
     game->piece = {};
+	game->piece.merged = false;
     game->piece.tetrino_index = (u8)random_int(0, ARRAY_COUNT(TETRINOS));
     game->piece.offset_col = WIDTH / 2;
     game->next_drop_time = game->time + get_time_to_next_drop(game->level);
 	
 	game->piece2 = {};
+	game->piece2.merged = false;
     game->piece2.tetrino_index = (u8)random_int(0, ARRAY_COUNT(TETRINOS));
 	game->piece2.offset_row = 1;
     game->piece2.offset_col = WIDTH / 2;
@@ -409,8 +411,14 @@ void spawn_piece(Game_State *game)
 inline bool
 soft_drop(Game_State *game) // move the piece down after specific time
 {
-    ++game->piece.offset_row;
-	++game->piece2.offset_row;
+	if(!game->piece.merged)
+	{
+		++game->piece.offset_row;
+	}
+	if(!game->piece2.merged)
+	{
+		++game->piece2.offset_row;
+	}
 
 	if (!check_piece_valid(&game->piece2, game->board, WIDTH, HEIGHT) && !game->piece2.merged)
     {
@@ -539,17 +547,6 @@ void update_game_play(Game_State *game, const Input_State *input)
 			--piece2.offset_col;
 			--piece.offset_col;
 		}
-
-		//if(!game->piece2.merged)
-		//{
-		//	--piece2.offset_col;
-		//}
-		//if(!game->piece.merged)
-		//{
-		//	--piece.offset_col;
-		//}
-		//--piece.offset_col;
-		//--piece2.offset_col;
 	}
 	if(input->dright > 0) // input to move the piece to the right
 	{
@@ -558,9 +555,6 @@ void update_game_play(Game_State *game, const Input_State *input)
 			++piece2.offset_col;
 			++piece.offset_col;
 		}
-
-		//++piece.offset_col;
-		//++piece2.offset_col;
 	}
 	if(input->dup > 0) // rotate piece
 	{
