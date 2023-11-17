@@ -579,8 +579,11 @@ void update_game_play(Game_State *game, const Input_State *input)
 	}
 	if(input->dup > 0) // rotate piece
 	{
-		piece.rotation = (piece.rotation + 1) % 4;
-		printf("Rotation: %d\n", piece.rotation);
+		if(!game->piece2.merged && !game->piece.merged)
+		{
+			piece.rotation = (piece.rotation + 1) % 4;
+			printf("Rotation: %d\n", piece.rotation);
+		}
 	}
 
 
