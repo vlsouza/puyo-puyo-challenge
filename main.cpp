@@ -118,30 +118,34 @@ tetrino(const u8 *data, s32 side)
 //};
 
 const u8 TETRINO_1[] = {
-	1,0,
-	0,0
+	0,1,0,
+	0,0,0,
+	0,0,0
 };
 
 const u8 TETRINO_2[] = {
-	2,0,
-	0,0
+	0,2,0,
+	0,0,0,
+	0,0,0
 };
 
 const u8 TETRINO_3[] = {
-	3,0,
-	0,0
+	0,3,0,
+	0,0,0,
+	0,0,0
 };
 
 const u8 TETRINO_4[] = {
-	4,0,
-	0,0
+	0,4,0,
+	0,0,0,
+	0,0,0
 };
 
 const Tetrino TETRINOS[] = {
-	tetrino(TETRINO_1, 2),
-	tetrino(TETRINO_2, 2),
-	tetrino(TETRINO_3, 2),
-	tetrino(TETRINO_4, 2),
+	tetrino(TETRINO_1, 3),
+	tetrino(TETRINO_2, 3),
+	tetrino(TETRINO_3, 3),
+	tetrino(TETRINO_4, 3),
 };
 
 enum Game_Phase
@@ -420,19 +424,36 @@ soft_drop(Game_State *game) // move the piece down after specific time
 		++game->piece2.offset_row;
 	}
 
-	if (!check_piece_valid(&game->piece2, game->board, WIDTH, HEIGHT) && !game->piece2.merged)
-    {
-        --game->piece2.offset_row;
-        merge_piece(game, game->piece2);
-		game->piece2.merged = true;
-    }
+	if(game->piece.rotation == 2) // secondary piece is below main piece
+	{
+		if (!check_piece_valid(&game->piece, game->board, WIDTH, HEIGHT) && !game->piece.merged)
+		{
+			--game->piece.offset_row;
+			merge_piece(game, game->piece);
+			game->piece.merged = true;
+		}
 
-	if (!check_piece_valid(&game->piece, game->board, WIDTH, HEIGHT) && !game->piece.merged)
-    {
-        --game->piece.offset_row;
-        merge_piece(game, game->piece);
-		game->piece.merged = true;
-    }
+		if (!check_piece_valid(&game->piece2, game->board, WIDTH, HEIGHT) && !game->piece2.merged)
+		{
+			--game->piece2.offset_row;
+			merge_piece(game, game->piece2);
+			game->piece2.merged = true;
+		}
+	} else {
+		if (!check_piece_valid(&game->piece2, game->board, WIDTH, HEIGHT) && !game->piece2.merged)
+		{
+			--game->piece2.offset_row;
+			merge_piece(game, game->piece2);
+			game->piece2.merged = true;
+		}
+
+		if (!check_piece_valid(&game->piece, game->board, WIDTH, HEIGHT) && !game->piece.merged)
+		{
+			--game->piece.offset_row;
+			merge_piece(game, game->piece);
+			game->piece.merged = true;
+		}
+	}
 
 	if(game->piece.merged && game->piece2.merged)
 	{
@@ -558,7 +579,7 @@ void update_game_play(Game_State *game, const Input_State *input)
 	}
 	if(input->dup > 0) // rotate piece
 	{
-		piece.rotation = (piece.rotation + 2) % 4;
+		piece.rotation = (piece.rotation + 1) % 4;
 	}
 
 	if(check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
