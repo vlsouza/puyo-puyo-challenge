@@ -1,0 +1,207 @@
+#include <functional>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include "colors.h"
+#include "types.h"
+#include "game.h"
+
+Game::Game() : window(nullptr), renderer(nullptr), font(nullptr) {
+    //InitSDL();
+    //InitTTF();
+    //SpawnPiece();
+    //lastInputState = {};
+    //deltaTime = 0.0f;
+}
+
+Game::~Game() {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_CloseFont(font);
+    TTF_Quit();
+    SDL_Quit();
+}
+
+void Game::InitSDL() {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cerr << "SDL initialization failed: " << SDL_GetError() << std::endl;
+        std::exit(1);
+    }
+
+    window = SDL_CreateWindow(
+        "Tetris",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        300,
+        720,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
+    if (!window) {
+        std::cerr << "Window creation failed: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        std::exit(1);
+    }
+
+    renderer = SDL_CreateRenderer(
+        window,
+        -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    if (!renderer) {
+        std::cerr << "Renderer creation failed: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        std::exit(1);
+    }
+}
+
+void Game::InitTTF() {
+    if (TTF_Init() < 0) {
+        std::cerr << "SDL_ttf initialization failed: " << TTF_GetError() << std::endl;
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        std::exit(1);
+    }
+
+    const char* fontName = "./build/novem___.ttf";
+    font = TTF_OpenFont(fontName, 24);
+
+    if (!font) {
+        std::cerr << "Font loading failed: " << TTF_GetError() << std::endl;
+        TTF_Quit();
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        std::exit(1);
+    }
+}
+//
+//void Game::SpawnPiece() {
+//    this->piece = {};
+//	this->piece.merged = false;
+//    this->piece.tetrino_index = (u8)random_int(0, ARRAY_COUNT(TETRINOS));
+//    this->piece.offset_col = WIDTH / 2;
+//    this->next_drop_time = game->time + get_time_to_next_drop(game->level);
+//
+//	this->piece2 = {};
+//	this->piece2.merged = false;
+//    this->piece2.tetrino_index = (u8)random_int(0, ARRAY_COUNT(TETRINOS));
+//	this->piece2.offset_row = 1;
+//    this->piece2.offset_col = WIDTH / 2;
+//    this->next_drop_time = game->time + get_time_to_next_drop(game->level);
+//}
+//
+//bool Game::SoftDrop() {
+//    // Implemente conforme necessário
+//    return false;
+//}
+//
+//void Game::MergePiece(const Piece_State& piece) {
+//    // Implemente conforme necessário
+//}
+//
+//void Game::UpdateGameStart(const Input_State& input) {
+//    // Implemente conforme necessário
+//}
+//
+//void Game::UpdateGamePlay(const Input_State& input) {
+//    // Implemente conforme necessário
+//}
+//
+//void Game::UpdateGameLine() {
+//    // Implemente conforme necessário
+//}
+//
+//void Game::UpdateGameGameOver(const Input_State& input) {
+//    // Implemente conforme necessário
+//}
+//
+//void Game::UpdateGame(const Input_State& input) {
+//    // Implemente conforme necessário
+//}
+//
+//void Game::RenderGame() {
+//    // Implemente conforme necessário
+//}
+
+void Game::Run(RenderInterface render, UpdateInterface update, SpawnPieceInterface spawn_piece) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		return;
+	}
+
+	if(TTF_Init() < 0)
+	{
+		return;
+	}
+
+	SDL_Window *window = SDL_CreateWindow(
+		"Challenge",
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		300,
+		720,
+		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	
+	SDL_Renderer * renderer = SDL_CreateRenderer(
+		window,
+		-1,
+		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+	const char *font_name = "./build/novem___.ttf";
+	TTF_Font *font = TTF_OpenFont(font_name, 24);
+
+    Game_State game = {}; // initialize
+	Input_State input = {}; // initialize
+
+    spawn_piece(&game);
+
+    bool quit = false;
+
+    while (!quit) {
+        deltaTime = SDL_GetTicks() / 1000.0f;
+        game.time = SDL_GetTicks() / 1000.0f;
+        SDL_Event e;
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+        }
+    
+        s32 key_count;
+        const u8 *key_states = SDL_GetKeyboardState(&key_count);
+
+        if (key_states[SDL_SCANCODE_ESCAPE])
+        {
+            quit = true;
+        }
+        
+        Input_State prev_input = input;
+        
+        input.left = key_states[SDL_SCANCODE_LEFT];
+        input.right = key_states[SDL_SCANCODE_RIGHT];
+        input.up = key_states[SDL_SCANCODE_UP];
+        input.down = key_states[SDL_SCANCODE_DOWN];
+        input.a = key_states[SDL_SCANCODE_SPACE];
+
+        input.dleft = input.left - prev_input.left;
+        input.dright = input.right - prev_input.right;
+        input.ddown = input.down - prev_input.down;
+        input.dup = input.up - prev_input.up;
+        input.da = input.a - prev_input.a;
+        
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+        
+        update(&game, &input);
+        render(&game, renderer, font);
+        //update_game(&game, &input);
+        //render_game(&game, renderer, font);
+
+        SDL_RenderPresent(renderer);
+    }
+
+    TTF_CloseFont(font);
+	SDL_DestroyRenderer(renderer);
+    SDL_Quit();
+}

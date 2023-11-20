@@ -1,3 +1,8 @@
+#include "types.h"
+
+#ifndef COLORS_H  
+#define COLORS_H 
+
 typedef struct Color
 {
     u8 r;
@@ -49,3 +54,5 @@ const Color DARK_COLORS[] = {
     color(0x1E, 0x42, 0x66, 0xFF),
     color(0x66, 0x42, 0x1E, 0xFF)
 };
+
+#endif  // COLORS_H

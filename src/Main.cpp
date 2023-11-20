@@ -8,15 +8,9 @@
 #include <SDL2/SDL.h> // platform layer
 #include <SDL2/SDL_ttf.h>
 
-#include "Types.h"
-#include "Colors.h"
-
-#define WIDTH 8 //why 'define'?
-#define HEIGHT 16
-#define VISIBLE_HEIGHT 20 // because 2 the game uses to spawn the next puzzle piece 
-#define GRID_SIZE 30
-
-#define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
+#include "game.h"
+#include "types.h"
+#include "colors.h"
 
 // based on classic tetrin from super nintendo
 // represents the levels
@@ -137,64 +131,6 @@ const Tetrino TETRINOS[] = {
 	tetrino(TETRINO_2, 3),
 	tetrino(TETRINO_3, 3),
 	tetrino(TETRINO_4, 3),
-};
-
-enum Game_Phase
-{
-	GAME_PHASE_START,
-	GAME_PHASE_PLAY,
-	GAME_PHASE_LINE, // this phase is the like a pause when lines are beeing removed
-	GAME_PHASE_GAMEOVER
-};
-
-struct Piece_State
-{
-	u8 tetrino_index; 
-
-	s32 offset_row; // where the piece currently is
-	s32 offset_col;
-
-	s32 rotation;
-
-	bool merged;
-};
-
-struct Game_State
-{
-	u8 board[WIDTH * HEIGHT]; //array of bit values (pesquisar para saber mais)
-	u8 lines[HEIGHT];
-	s32 pending_line_count;
-
-	Piece_State piece;
-
-	Piece_State piece2;
-
-	Game_Phase phase;
-
-	s32 start_level;
-	s32 level;
-	s32 line_count;
-	s32 points;
-
-	f32 next_drop_time;
-	f32 hightlight_end_time;
-	f32 time;
-};
-
-struct Input_State
-{
-	u8 left;
-	u8 right;
-	u8 up;
-	u8 down;
-
-	u8 a;
-
-    s8 dleft;
-    s8 dright;
-    s8 dup;
-	s8 ddown;
-	s8 da;
 };
 
 enum Text_Align
@@ -872,85 +808,8 @@ void render_game(const Game_State *game, SDL_Renderer *renderer, TTF_Font *font)
 }
 
 int main(int argc, char *argv[]) {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		return 1;
-	}
-
-	if(TTF_Init() < 0)
-	{
-		return 2;
-	}
-
-	SDL_Window *window = SDL_CreateWindow(
-		"Challenge",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		300,
-		720,
-		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	
-	SDL_Renderer * renderer = SDL_CreateRenderer(
-		window,
-		-1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-	const char *font_name = "./build/novem___.ttf";
-	TTF_Font *font = TTF_OpenFont(font_name, 24);
-
-	Game_State game = {}; // initialize
-	Input_State input = {}; // initialize
-
-	spawn_piece(&game);
-
-	bool quit = false;
-	while (!quit)
-	{
-		game.time = SDL_GetTicks() / 1000.0f;
-
-		SDL_Event e;
-		while (SDL_PollEvent(&e) != 0)
-		{
-			if (e.type == SDL_QUIT)
-			{
-				quit = true;
-			}
-		}
-
-        s32 key_count;
-        const u8 *key_states = SDL_GetKeyboardState(&key_count);
-
-        if (key_states[SDL_SCANCODE_ESCAPE])
-        {
-            quit = true;
-        }
-        
-        Input_State prev_input = input;
-        
-        input.left = key_states[SDL_SCANCODE_LEFT];
-        input.right = key_states[SDL_SCANCODE_RIGHT];
-        input.up = key_states[SDL_SCANCODE_UP];
-        input.down = key_states[SDL_SCANCODE_DOWN];
-        input.a = key_states[SDL_SCANCODE_SPACE];
-
-        input.dleft = input.left - prev_input.left;
-        input.dright = input.right - prev_input.right;
-        input.ddown = input.down - prev_input.down;
-        input.dup = input.up - prev_input.up;
-        input.da = input.a - prev_input.a;
-        
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
-        
-        update_game(&game, &input);
-        render_game(&game, renderer, font);
-
-        SDL_RenderPresent(renderer);
-	}
-
-	TTF_CloseFont(font);
-	SDL_DestroyRenderer(renderer);
-    SDL_Quit();
+	Game* game = new Game();
+	game->Run(render_game, update_game, spawn_piece);
 
 	return 0;    
 }
