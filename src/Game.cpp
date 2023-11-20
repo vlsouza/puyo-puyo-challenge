@@ -6,8 +6,8 @@
 #include "game.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), font(nullptr) {
-    //InitSDL();
-    //InitTTF();
+    InitSDL();
+    InitTTF();
     //SpawnPiece();
     //lastInputState = {};
     //deltaTime = 0.0f;
@@ -27,26 +27,26 @@ void Game::InitSDL() {
         std::exit(1);
     }
 
-    window = SDL_CreateWindow(
-        "Tetris",
+    this->window = SDL_CreateWindow(
+        "Challenge",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         300,
         720,
         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
-    if (!window) {
+    if (!this->window) {
         std::cerr << "Window creation failed: " << SDL_GetError() << std::endl;
         SDL_Quit();
         std::exit(1);
     }
 
-    renderer = SDL_CreateRenderer(
+    this->renderer = SDL_CreateRenderer(
         window,
         -1,
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    if (!renderer) {
+    if (!this->renderer) {
         std::cerr << "Renderer creation failed: " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -57,16 +57,16 @@ void Game::InitSDL() {
 void Game::InitTTF() {
     if (TTF_Init() < 0) {
         std::cerr << "SDL_ttf initialization failed: " << TTF_GetError() << std::endl;
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
+        SDL_DestroyRenderer(this->renderer);
+        SDL_DestroyWindow(this->window);
         SDL_Quit();
         std::exit(1);
     }
 
     const char* fontName = "./build/novem___.ttf";
-    font = TTF_OpenFont(fontName, 24);
+    this->font = TTF_OpenFont(fontName, 24);
 
-    if (!font) {
+    if (!this->font) {
         std::cerr << "Font loading failed: " << TTF_GetError() << std::endl;
         TTF_Quit();
         SDL_DestroyRenderer(renderer);
@@ -125,32 +125,6 @@ void Game::InitTTF() {
 //}
 
 void Game::Run(RenderInterface render, UpdateInterface update, SpawnPieceInterface spawn_piece) {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		return;
-	}
-
-	if(TTF_Init() < 0)
-	{
-		return;
-	}
-
-	SDL_Window *window = SDL_CreateWindow(
-		"Challenge",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		300,
-		720,
-		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-	
-	SDL_Renderer * renderer = SDL_CreateRenderer(
-		window,
-		-1,
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-	const char *font_name = "./build/novem___.ttf";
-	TTF_Font *font = TTF_OpenFont(font_name, 24);
-
     Game_State game = {}; // initialize
 	Input_State input = {}; // initialize
 
@@ -190,13 +164,11 @@ void Game::Run(RenderInterface render, UpdateInterface update, SpawnPieceInterfa
         input.dup = input.up - prev_input.up;
         input.da = input.a - prev_input.a;
         
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-        SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 0);
+        SDL_RenderClear(this->renderer);
         
         update(&game, &input);
-        render(&game, renderer, font);
-        //update_game(&game, &input);
-        //render_game(&game, renderer, font);
+        render(&game, this->renderer, this->font);
 
         SDL_RenderPresent(renderer);
     }
