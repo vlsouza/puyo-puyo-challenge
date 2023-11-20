@@ -8,17 +8,8 @@
 #include <SDL2/SDL.h> // platform layer
 #include <SDL2/SDL_ttf.h>
 
-//why declare these types?
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef int8_t s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef float f32;
-typedef double f64;
-
-#include "colors.h"
+#include "Types.h"
+#include "Colors.h"
 
 #define WIDTH 8 //why 'define'?
 #define HEIGHT 16
