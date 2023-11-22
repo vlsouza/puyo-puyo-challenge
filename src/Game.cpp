@@ -1,7 +1,7 @@
 #include <functional>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include "colors.h"
+#include "color.h"
 #include "types.h"
 #include "game.h"
 
@@ -31,8 +31,8 @@ void Game::InitSDL() {
         "Challenge",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        300,
-        720,
+        295,
+        690,
         SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
     if (!this->window) {
