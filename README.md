@@ -10,9 +10,9 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
    - All dependencies are available in lib and include folders
    - Use a C++ compiler to compile the source code.
    - This project uses Makefile, to compile it just run in the terminal:
-```
-make
-```
+   ```
+   make
+   ```
 
 2. **Execution:**
    - Run main.exe in the root folder after compilation.
@@ -40,7 +40,7 @@ make
 - Once there is no movement (all pieces placed), matches are validated and removed from the grid.
 - The next pair will be spawned once all matches are cleared.
 
-## 🔎 What is missing
+## 🔎 Incompleted features
 
 - A chain algorithm is missing to scoring like proposed:
     - Forming groups of 4+ pieces, in L, T, square or other fully connecting shapes destroys the pieces.
