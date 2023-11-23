@@ -78,19 +78,22 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
 
 ## 🖼️ Screenshots
 
-- Gameplay:                                       
-  <kbd>
-    <img src="./screenshot/Gameplay.png" alt="Gameplay Screenshot" />
-  </kbd>
-
-- Starting Level:
   <kbd>
     <img src="./screenshot/StartingLevel.png" alt="Starting Level Screenshot" />
+    <br>
+    Starting Level
+  </kbd>
+  
+  <kbd>
+    <img src="./screenshot/Gameplay.png" alt="Gameplay Screenshot" />
+    <br>
+    Gameplay
   </kbd>
 
-- Game Over:
   <kbd>
     <img src="./screenshot/GameOver.png" alt="Game Over Screenshot" />
+    <br>
+    Game Over
   </kbd>
 
 ---
