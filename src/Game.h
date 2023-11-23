@@ -14,7 +14,7 @@
 
 #define WIDTH 8 
 #define HEIGHT 16
-#define VISIBLE_HEIGHT 20 // to spawn the next puzzle piece 
+#define VISIBLE_HEIGHT 18 // space to spawn the next puzzle piece 
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -54,7 +54,7 @@ struct Game_State
 
 	Game_Phase phase;
 
-	s32 start_level;
+	s32 start_level = 1;
 	s32 level;
 	s32 line_count;
 	s32 points;
@@ -163,14 +163,14 @@ spawn_piece(Game_State *game)
     game->main_block = {};
 	game->main_block.merged = false;
     game->main_block.block_index = (u8)random_int(0, ARRAY_COUNT(BLOCKS));
-    game->main_block.offset_col = WIDTH / 2;
+    game->main_block.offset_col = (WIDTH / 2) - 1;
     game->next_drop_time = game->time + get_time_to_next_drop(game->level);
 	
 	game->second_block = {};
 	game->second_block.merged = false;
     game->second_block.block_index = (u8)random_int(0, ARRAY_COUNT(BLOCKS));
 	game->second_block.offset_row = 1;
-    game->second_block.offset_col = WIDTH / 2;
+    game->second_block.offset_col = (WIDTH / 2) - 1;
     game->next_drop_time = game->time + get_time_to_next_drop(game->level);
 }
 
@@ -236,7 +236,7 @@ update_game_start(Game_State *game, const Input_State *input)
 	{
 		++game->start_level;
 	}
-	if(input->ddown > 0 && game->start_level > 0)
+	if(input->ddown > 0 && game->start_level > 1)
 	{
 		--game->start_level;
 	}

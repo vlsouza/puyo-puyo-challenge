@@ -26,7 +26,7 @@ void Game::InitSDL() {
     }
 
     this->window = SDL_CreateWindow(
-        "Challenge",
+        "Puyo Puyo Challenge",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         295,
@@ -61,8 +61,8 @@ void Game::InitTTF() {
         std::exit(1);
     }
 
-    const char* fontName = "./build/novem___.ttf";
-    this->font = TTF_OpenFont(fontName, 24);
+    const char* fontName = "./build/Pokemon Classic.ttf";
+    this->font = TTF_OpenFont(fontName, 15);
 
     if (!this->font) {
         std::cerr << "Font loading failed: " << TTF_GetError() << std::endl;
