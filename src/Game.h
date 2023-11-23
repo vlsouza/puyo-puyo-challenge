@@ -14,7 +14,7 @@
 
 #define WIDTH 8 
 #define HEIGHT 16
-#define VISIBLE_HEIGHT 18 // space to spawn the next puzzle piece 
+#define VISIBLE_HEIGHT 18 // to spawn the piece above the top of the grid 
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
