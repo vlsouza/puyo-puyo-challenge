@@ -88,7 +88,7 @@ clear_lines(u8 *values, s32 width, s32 height, u8 *lines)
 	}
 }
 
-// Adicione esta função para verificar se uma posição no tabuleiro está vazia
+// check if a cell in the board is empty
 inline bool 
 is_empty(const u8 *board, s32 width, s32 row, s32 col) {
     return matrix_get(board, width, row, col) == 0;
@@ -157,10 +157,6 @@ draw_board(SDL_Renderer *renderer, const u8 *board, s32 width, s32 height, s32 o
 		{
 			u8 value = matrix_get(board, width, row, col);
 			draw_cell(renderer, row, col, value, offset_x, offset_y);
-			//if(value)
-			//{
-			//	draw_cell(renderer, row, col, value, offset_x, offset_y);
-			//}
 		}
 	}
 }
