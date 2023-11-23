@@ -75,27 +75,27 @@ void Game::InitTTF() {
 }
 
 //void Game::UpdateGameStart(const Input_State& input) {
-//    // Implemente conforme necessário
+//    // TBD
 //}
 //
 //void Game::UpdateGamePlay(const Input_State& input) {
-//    // Implemente conforme necessário
+//    // TBD
 //}
 //
 //void Game::UpdateGameLine() {
-//    // Implemente conforme necessário
+//    // TBD
 //}
 //
 //void Game::UpdateGameGameOver(const Input_State& input) {
-//    // Implemente conforme necessário
+//    // TBD
 //}
 //
 //void Game::UpdateGame(const Input_State& input) {
-//    // Implemente conforme necessário
+//    // TBD
 //}
 //
 //void Game::RenderGame() {
-//    // Implemente conforme necessário
+//    // TBD
 //}
 
 void Game::Run(RenderInterface render, UpdateInterface update, SpawnPieceInterface spawn_piece) {
