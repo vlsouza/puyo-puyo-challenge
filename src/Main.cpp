@@ -9,7 +9,6 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "game.h"
-#include "render.h"
 
 int main(int argc, char *argv[]) {
 	Game* game = new Game();

@@ -14,7 +14,7 @@ enum Text_Align
 	TEXT_ALIGN_RIGHT
 };
 
-void
+inline void
 draw_string(SDL_Renderer *renderer,
             TTF_Font *font,
             const char *text,
