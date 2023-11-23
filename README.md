@@ -1,6 +1,6 @@
 # Puyo Puyo Challenge
 
-A Puyo Puyo game clone in C++ using the SDL2 library.
+A Puyo Puyo game clone in C/C++ using the SDL2 library.
 
 ## 🎮 Instructions
 
@@ -9,14 +9,16 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
    - [SDL2](https://www.libsdl.org/) and [SDL_ttf](https://www.libsdl.org/projects/SDL_ttf/) libraries are available in the project root folder.
    - All dependencies are available in lib and include folders
    - Use a C++ compiler to compile the source code.
-   - This project uses Makefile, to compile it just run in the terminal:
+   - This project uses Makefile, to compile it, just run the following command in the root folder in a terminal:
+   <br>
+   
    ```
    make
    ```
 
 2. **Execution:**
    - Run main.exe in the root folder after compilation.
-   - Use the arrow keys to move the pieces, the down arrow key to speed up the fall, and the space bar to rotate the piece.
+   - Press space bar to start.
 
 ## 🎉 Features
 
@@ -41,17 +43,15 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
 - The next pair will be spawned once all matches are cleared.
 
 ## 🔎 Incompleted features
+I needed to make decisions to manage the time and deliver the challenge scope on deadline. These two topics need further work:
 
-- A chain algorithm is missing to scoring like proposed:
-    - Forming groups of 4+ pieces, in L, T, square or other fully connecting shapes destroys the pieces.
-- Instead, it was implement a line scoring like Tetris.
-- I first come up with a Tetris game and started the challenge. Being able to develop Tetris mechanics, if I was not able to finish the Puyo Puyo required mechanics I was still able to delivery a functional game.
+- Chain algorithm (Forming groups of 4+ pieces, in L, T, square or other fully connecting shapes destroys the pieces)
+   - I have a hard time to reposition the pieces individually after doing the chain clean, and I was going out of time.
+   - Workaround: Keep the line scoring like in Tetris. 
 - Object-Oriented Design Patterns
-    - First I decided to focus in the game working.
-    - Then do a rework to move structs to class and implement Design Patterns like Command and State in a properly way.
-    - The game working took more time than expected.
-    - I was able to start the rework and almost finish the Game class.
-    - The full implementation of the Game class and the following ones are still TBD.
+   - After having a functional game, I started the code refinement, moving structs to class.
+   - I was able to start polish the code and move Game struct to a class.
+   - The full implementation of Object-Oriented Design Patterns are still TBD.
 
 ## 🕹️ How to Play
 
@@ -61,11 +61,11 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
 2. **Controls:**
    - Use the arrow keys to move the pieces left, right, or down.
    - Press the up arrow key to rotate the piece.
-   - Press the space bar to speed up the piece's fall.
+   - Press the down arrow to speed up the piece's fall.
+   - Press the space bar to drop the piece.
 
 3. **Scoring:**
    - Earn points by completing lines.
-   - The longer the chain, the more points you earn.
    - Advance through levels by earning points.
 
 4. **Game Over:**
@@ -78,14 +78,23 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
 
 ## 🖼️ Screenshots
 
-- Gameplay:                                       
-![Gameplay Screenshot](./screenshot/Gameplay.png) 
+  <kbd>
+    <img src="./screenshot/StartingLevel.png" alt="Starting Level Screenshot" />
+    <br>
+    Starting Level
+  </kbd>
+  
+  <kbd>
+    <img src="./screenshot/Gameplay.png" alt="Gameplay Screenshot" />
+    <br>
+    Gameplay
+  </kbd>
 
-- Starting Level:
-![Starting Level Screenshot](./screenshot/StartingLevel.png)
-
-- Game Over:
-![Game Over Screenshot](./screenshot/GameOver.png)
+  <kbd>
+    <img src="./screenshot/GameOver.png" alt="Game Over Screenshot" />
+    <br>
+    Game Over
+  </kbd>
 
 ---
 
