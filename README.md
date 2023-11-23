@@ -10,9 +10,9 @@ A Puyo Puyo game clone in C++ using the SDL2 library.
    - All dependencies are available in lib and include folders
    - Use a C++ compiler to compile the source code.
    - This project uses Makefile, to compile it just run in the terminal:
-     ```
-	 make
-     ```
+```
+make
+```
 
 2. **Execution:**
    - Run main.exe in the root folder after compilation.
