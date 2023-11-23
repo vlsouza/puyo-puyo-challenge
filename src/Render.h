@@ -67,55 +67,55 @@ void update_game_line(Game_State *game)
 
 void update_game_play(Game_State *game, const Input_State *input)
 {
-	Piece_State piece = game->piece; // copy state and validate below if its possible to change (avoid out of matrix bounds)
-	Piece_State piece2 = game->piece2;
+	Block_State main_block = game->main_block; // copy state and validate below if its possible to change (avoid out of matrix bounds)
+	Block_State second_block = game->second_block;
 
 	if(input->dleft > 0) // input to move the piece to the left
 	{
-		if(!game->piece2.merged && !game->piece.merged)
+		if(!game->second_block.merged && !game->main_block.merged)
 		{
-			--piece2.offset_col;
-			--piece.offset_col;
+			--second_block.offset_col;
+			--main_block.offset_col;
 		}
 	}
 	if(input->dright > 0) // input to move the piece to the right
 	{
-		if(!game->piece2.merged && !game->piece.merged)
+		if(!game->second_block.merged && !game->main_block.merged)
 		{
-			++piece2.offset_col;
-			++piece.offset_col;
+			++second_block.offset_col;
+			++main_block.offset_col;
 		}
 	}
 	if(input->dup > 0) // rotate piece
 	{
-		if(!game->piece2.merged && !game->piece.merged)
+		if(!game->second_block.merged && !game->main_block.merged)
 		{
-			piece.rotation = (piece.rotation + 1) % 4;
+			main_block.rotation = (main_block.rotation + 1) % 4;
 		}
 	}
 
 
 	// validate before which piece is turned to out of bounds
-	if((piece.rotation == 1 && input->dright > 0) || (piece.rotation == 3 && input->dleft > 0))
+	if((main_block.rotation == 1 && input->dright > 0) || (main_block.rotation == 3 && input->dleft > 0))
 	{
-		if(check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
+		if(check_block_valid(&main_block, game->board, WIDTH, HEIGHT))
 		{
-			game->piece = piece; // update the in game piece state
+			game->main_block = main_block; // update the in game piece state
 
-			if(check_piece_valid(&piece2, game->board, WIDTH, HEIGHT))
+			if(check_block_valid(&second_block, game->board, WIDTH, HEIGHT))
 			{
-				game->piece2 = piece2; // update the in game piece state
+				game->second_block = second_block; // update the in game piece state
 			}
 		}
 	} else
 	{
-		if(check_piece_valid(&piece2, game->board, WIDTH, HEIGHT))
+		if(check_block_valid(&second_block, game->board, WIDTH, HEIGHT))
 		{
-			game->piece2 = piece2; // update the in game piece state
+			game->second_block = second_block; // update the in game block state
 
-			if(check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
+			if(check_block_valid(&main_block, game->board, WIDTH, HEIGHT))
 			{
-				game->piece = piece; // update the in game piece state
+				game->main_block = main_block; // update the in game block state
 			}
 		}
 	}
@@ -181,23 +181,23 @@ void render_game(const Game_State *game, SDL_Renderer *renderer, TTF_Font *font)
 
     if (game->phase == GAME_PHASE_PLAY)
     {
-		Piece_State piece = game->piece;
-		Piece_State piece2 = game->piece2;
+		Block_State main_block = game->main_block;
+		Block_State second_block = game->second_block;
 		
-        draw_piece(renderer, &game->piece, 0, margin_y);
-        draw_piece(renderer, &game->piece2, 0, margin_y);
+        draw_piece(renderer, &game->main_block, 0, margin_y);
+        draw_piece(renderer, &game->second_block, 0, margin_y);
 
-        while (check_piece_valid(&piece, game->board, WIDTH, HEIGHT))
+        while (check_block_valid(&main_block, game->board, WIDTH, HEIGHT))
         {
-            piece.offset_row++;
+            main_block.offset_row++;
         }
-        --piece.offset_row;
+        --main_block.offset_row;
 
-        while (check_piece_valid(&piece2, game->board, WIDTH, HEIGHT))
+        while (check_block_valid(&second_block, game->board, WIDTH, HEIGHT))
         {
-			piece2.offset_row++;
+			second_block.offset_row++;
         }
-		--piece2.offset_row;
+		--second_block.offset_row;
     }
 
     if (game->phase == GAME_PHASE_LINE)

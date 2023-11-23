@@ -10,9 +10,9 @@
 #include "color.h"
 #include "piece.h"
 
-#define WIDTH 8 //why 'define'?
+#define WIDTH 8 
 #define HEIGHT 16
-#define VISIBLE_HEIGHT 20 // because 2 the game uses to spawn the next puzzle piece 
+#define VISIBLE_HEIGHT 20 // to spawn the next puzzle piece 
 
 #define ARRAY_COUNT(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -42,13 +42,13 @@ enum Game_Phase
 
 struct Game_State
 {
-	u8 board[WIDTH * HEIGHT]; //array of bit values (pesquisar para saber mais)
+	u8 board[WIDTH * HEIGHT]; //array of bit values 
 	u8 lines[HEIGHT];
 	s32 pending_line_count;
 
-	Piece_State piece;
-
-	Piece_State piece2;
+	// a piece is made from two blocks
+	Block_State main_block; 
+	Block_State second_block;
 
 	Game_Phase phase;
 
@@ -94,15 +94,15 @@ private:
 };
 
 inline void 
-merge_piece(Game_State *game, Piece_State piece) {
-    const Block *block = BLOCKS + piece.block_index;
+merge_block(Game_State *game, Block_State block_state) {
+    const Block *block = BLOCKS + block_state.block_index;
 
     for (s32 row = 0; row < block->side; ++row) {
         for (s32 col = 0; col < block->side; ++col) {
-            u8 value = block_get(block, row, col, piece.rotation);
+            u8 value = block_get(block, row, col, block_state.rotation);
             if (value) {
-                s32 board_row = piece.offset_row + row;
-                s32 board_col = piece.offset_col + col;
+                s32 board_row = block_state.offset_row + row;
+                s32 board_col = block_state.offset_col + col;
                 matrix_set(game->board, WIDTH, board_row, board_col, value);
             }
         }
@@ -158,64 +158,64 @@ get_time_to_next_drop(s32 level)
 inline void 
 spawn_piece(Game_State *game)
 {
-    game->piece = {};
-	game->piece.merged = false;
-    game->piece.block_index = (u8)random_int(0, ARRAY_COUNT(BLOCKS));
-    game->piece.offset_col = WIDTH / 2;
+    game->main_block = {};
+	game->main_block.merged = false;
+    game->main_block.block_index = (u8)random_int(0, ARRAY_COUNT(BLOCKS));
+    game->main_block.offset_col = WIDTH / 2;
     game->next_drop_time = game->time + get_time_to_next_drop(game->level);
 	
-	game->piece2 = {};
-	game->piece2.merged = false;
-    game->piece2.block_index = (u8)random_int(0, ARRAY_COUNT(BLOCKS));
-	game->piece2.offset_row = 1;
-    game->piece2.offset_col = WIDTH / 2;
+	game->second_block = {};
+	game->second_block.merged = false;
+    game->second_block.block_index = (u8)random_int(0, ARRAY_COUNT(BLOCKS));
+	game->second_block.offset_row = 1;
+    game->second_block.offset_col = WIDTH / 2;
     game->next_drop_time = game->time + get_time_to_next_drop(game->level);
 }
 
 inline bool
 soft_drop(Game_State *game) // move the piece down after specific time
 {
-	if(!game->piece.merged)
+	if(!game->main_block.merged)
 	{
-		++game->piece.offset_row;
+		++game->main_block.offset_row;
 	}
-	if(!game->piece2.merged)
+	if(!game->second_block.merged)
 	{
-		++game->piece2.offset_row;
+		++game->second_block.offset_row;
 	}
 
-	if(game->piece.rotation == 2) // secondary piece is below main piece
+	if(game->main_block.rotation == 2) // secondary block is below main block
 	{
-		if (!check_piece_valid(&game->piece, game->board, WIDTH, HEIGHT) && !game->piece.merged)
+		if (!check_block_valid(&game->main_block, game->board, WIDTH, HEIGHT) && !game->main_block.merged)
 		{
-			--game->piece.offset_row;
-			merge_piece(game, game->piece);
-			game->piece.merged = true;
+			--game->main_block.offset_row;
+			merge_block(game, game->main_block);
+			game->main_block.merged = true;
 		}
 
-		if (!check_piece_valid(&game->piece2, game->board, WIDTH, HEIGHT) && !game->piece2.merged)
+		if (!check_block_valid(&game->second_block, game->board, WIDTH, HEIGHT) && !game->second_block.merged)
 		{
-			--game->piece2.offset_row;
-			merge_piece(game, game->piece2);
-			game->piece2.merged = true;
+			--game->second_block.offset_row;
+			merge_block(game, game->second_block);
+			game->second_block.merged = true;
 		}
 	} else {
-		if (!check_piece_valid(&game->piece2, game->board, WIDTH, HEIGHT) && !game->piece2.merged)
+		if (!check_block_valid(&game->second_block, game->board, WIDTH, HEIGHT) && !game->second_block.merged)
 		{
-			--game->piece2.offset_row;
-			merge_piece(game, game->piece2);
-			game->piece2.merged = true;
+			--game->second_block.offset_row;
+			merge_block(game, game->second_block);
+			game->second_block.merged = true;
 		}
 
-		if (!check_piece_valid(&game->piece, game->board, WIDTH, HEIGHT) && !game->piece.merged)
+		if (!check_block_valid(&game->main_block, game->board, WIDTH, HEIGHT) && !game->main_block.merged)
 		{
-			--game->piece.offset_row;
-			merge_piece(game, game->piece);
-			game->piece.merged = true;
+			--game->main_block.offset_row;
+			merge_block(game, game->main_block);
+			game->main_block.merged = true;
 		}
 	}
 
-	if(game->piece.merged && game->piece2.merged)
+	if(game->main_block.merged && game->second_block.merged)
 	{
 		spawn_piece(game);
 		return false;

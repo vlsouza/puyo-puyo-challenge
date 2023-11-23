@@ -3,14 +3,12 @@
 #include <SDL2/SDL_ttf.h>
 #include "color.h"
 #include "types.h"
+#include "block.h"
 #include "game.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), font(nullptr) {
     InitSDL();
     InitTTF();
-    //SpawnPiece();
-    //lastInputState = {};
-    //deltaTime = 0.0f;
 }
 
 Game::~Game() {
@@ -75,31 +73,7 @@ void Game::InitTTF() {
         std::exit(1);
     }
 }
-//
-//void Game::SpawnPiece() {
-//    this->piece = {};
-//	this->piece.merged = false;
-//    this->piece.tetrino_index = (u8)random_int(0, ARRAY_COUNT(TETRINOS));
-//    this->piece.offset_col = WIDTH / 2;
-//    this->next_drop_time = game->time + get_time_to_next_drop(game->level);
-//
-//	this->piece2 = {};
-//	this->piece2.merged = false;
-//    this->piece2.tetrino_index = (u8)random_int(0, ARRAY_COUNT(TETRINOS));
-//	this->piece2.offset_row = 1;
-//    this->piece2.offset_col = WIDTH / 2;
-//    this->next_drop_time = game->time + get_time_to_next_drop(game->level);
-//}
-//
-//bool Game::SoftDrop() {
-//    // Implemente conforme necessário
-//    return false;
-//}
-//
-//void Game::MergePiece(const Piece_State& piece) {
-//    // Implemente conforme necessário
-//}
-//
+
 //void Game::UpdateGameStart(const Input_State& input) {
 //    // Implemente conforme necessário
 //}

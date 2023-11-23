@@ -3,7 +3,6 @@
 
 #include <cstring>
 #include "types.h"
-#include "block.h"
 
 #define GRID_SIZE 37
 
