@@ -76,6 +76,14 @@ make
 - Developed in C/C++.
 - SDL2 library for graphical manipulation.
 
+## 🖼️ Screenshots
+
+![Gameplay Screenshot](./screenshot/Gameplay.png)
+
+![Starting Level Screenshot](./screenshot/StartingLevel.png)
+
+![Game Over Screenshot](./screenshot/GameOver.png)
+
 ---
 
 Enjoy! 🕹️
